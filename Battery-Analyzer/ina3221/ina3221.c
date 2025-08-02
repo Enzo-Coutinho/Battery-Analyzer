@@ -67,6 +67,6 @@ uint16_t read_register_ina3221(const uint8_t reg) {
 }
 
 void write_register_ina3221(const uint8_t reg, const uint16_t data) {
-    const uint8_t buffer[3] = {reg, (uint8_t)((data >> 8) && 0xFFFF), (uint8_t)(data && 0xFF)};
+    const uint8_t buffer[3] = {reg, (uint8_t)((data >> 8) & 0xFF), (uint8_t)(data & 0xFF)};
     i2c_write(INA3221_ADDRESS, buffer, 3);
 }
