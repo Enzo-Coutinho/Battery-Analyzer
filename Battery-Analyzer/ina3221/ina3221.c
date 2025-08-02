@@ -4,14 +4,6 @@ float _shunt_resistors[3] = {0.1, 0.1, 0.1}; // Placeholder for shunt resistors
 
 const uint8_t INA3221_ADDRESS = INA3221_I2C_ADDRESS_GND;
 
-enum ENDIANESS
-{
-    BIG_ENDIAN = 0,
-    LITTLE_ENDIAN = 1
-};
-
-uint16_t swap_endian(uint8_t value[2], enum ENDIANESS endianess);
-
 void reset_ina3221(void) {
     configuration_t configuration = {.configuration_bitmap = {._rst = 1}};
     set_configuration(&configuration);
@@ -24,33 +16,26 @@ uint8_t is_connected_ina3221(void)
 
 uint16_t get_manufacturer_id(void)
 {
-    uint8_t _id_buff[2] = {0};
-    read_register_ina3221(__ADDR_MANUFCTER_ID, _id_buff);
-    return swap_endian(_id_buff, LITTLE_ENDIAN);
+    return read_register_ina3221(__ADDR_MANUFCTER_ID);
 }
 
 uint16_t get_die_id(void)
 {
-    uint8_t _id_buff[2] = {0};
-    read_register_ina3221(__ADDR_MANUFCTER_ID, _id_buff);
-    return swap_endian(_id_buff, LITTLE_ENDIAN);
+    return read_register_ina3221(__ADDR_MANUFCTER_ID);
 }
 
 void get_configuration(configuration_t * configuration)
 {
-    read_register_ina3221(__ADDR_CONFIGURATION, configuration->u8_configuration);
-    configuration->u16_configuration = swap_endian(configuration->u8_configuration, LITTLE_ENDIAN);
+    read_register_ina3221(__ADDR_CONFIGURATION);
 }
 
 void set_configuration(configuration_t  *config) {
-    configuration_t current_config;
-    get_configuration(&current_config);
+    uint16_t set_config = config->u16_configuration;
+    get_configuration(config);
 
-    config->u16_configuration |= current_config.u16_configuration;
+    config->u16_configuration |= set_config;
 
-    swap_endian(config->u8_configuration, BIG_ENDIAN);
-
-    write_register_ina3221(__ADDR_CONFIGURATION, config->u8_configuration);
+    write_register_ina3221(__ADDR_CONFIGURATION, config->u16_configuration);
 }
 
 void get_shunt_voltage(enum CHANNEL channel, shunt_voltage_t* shunt_voltage)
@@ -70,27 +55,16 @@ void get_shunt_voltage(enum CHANNEL channel, shunt_voltage_t* shunt_voltage)
         default:
             return;
     }
-    read_register_ina3221(reg, shunt_voltage->u8_shunt_voltage);
-    shunt_voltage->u16_shunt_voltage = swap_endian(shunt_voltage->u8_shunt_voltage, LITTLE_ENDIAN);
+    shunt_voltage->u16_shunt_voltage = read_register_ina3221(reg);
 }
 
-void read_register_ina3221(uint8_t reg, uint8_t *data) {
-    i2c_read(INA3221_ADDRESS, reg, data, 2);
+uint16_t read_register_ina3221(const uint8_t reg) {
+    const uint8_t buffer[2];
+    i2c_read(INA3221_ADDRESS, reg, buffer, 2);
+    return (buffer[0] << 8 | buffer[1]);
 }
 
-void write_register_ina3221(uint8_t reg, const uint8_t *data) {
-    const uint8_t buffer[3] = {reg, data[0], data[1]};
+void write_register_ina3221(const uint8_t reg, const uint16_t data) {
+    const uint8_t buffer[3] = {reg, ((data >> 8) && 0xFFFF), (data << 8) && 0xFF};
     i2c_write(INA3221_ADDRESS, buffer, 3);
-}
-
-uint16_t swap_endian(uint8_t value[2], enum ENDIANESS endianess) {
-    switch(endianess)
-    {
-        case LITTLE_ENDIAN:
-            return ((value[MSB] << 8) | value[LSB]);
-        case BIG_ENDIAN:
-            return ((value[MSB] >> 8) | value[LSB]);
-        default:
-            return 0;
-    }
 }

@@ -53,7 +53,6 @@ typedef union
         u8 _ch3 : 1;
         u8 _rst : 1;
     } configuration_bitmap;
-    u8 u8_configuration[2];
     u16 u16_configuration;
 } configuration_t;
 
@@ -65,7 +64,6 @@ typedef union
         u8 _data : 12;
         u8 _sign : 1;
     } shunt_voltage_bitmap;
-    u8 u8_shunt_voltage[2];
     u16 u16_shunt_voltage;
 } shunt_voltage_t;
 
@@ -77,7 +75,6 @@ typedef union
         u8 _data : 12;
         u8 _sign : 1;
     } bus_voltage_bitmap;
-    u8 u8_bus_voltage[2];
     u16 u16_bus_voltage;
 } bus_voltage_t;
 

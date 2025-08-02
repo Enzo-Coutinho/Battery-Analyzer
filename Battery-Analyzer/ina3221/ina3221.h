@@ -25,7 +25,7 @@ void get_bus_voltage(enum CHANNEL channel, bus_voltage_t* bus_voltage);
 
 uint16_t get_current(enum CHANNEL channel);
 
-void read_register_ina3221(uint8_t reg, uint8_t *data);
-void write_register_ina3221(uint8_t reg, const uint8_t *data);
+uint16_t read_register_ina3221(const uint8_t reg);
+void write_register_ina3221(const uint8_t reg, const uint16_t data);
 
 #endif
