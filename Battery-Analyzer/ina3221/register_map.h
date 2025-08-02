@@ -7,6 +7,11 @@
 #define DEFAULT_SHUNT_VOLTAGE 0x00
 #define DEFAULT_BUS_VOLTAGE 0x00
 
+#define INA3221_I2C_ADDRESS_GND 0x40 // Default I2C address for INA3221
+
+#define MSB 0
+#define LSB 1
+
 typedef u8 u8;
 typedef uint16_t u16;
 
