@@ -58,7 +58,25 @@ void get_shunt_voltage(enum CHANNEL channel, shunt_voltage_t* shunt_voltage)
     shunt_voltage->u16_shunt_voltage = read_register_ina3221(reg);
 }
 
-
+void get_bus_voltage(enum CHANNEL channel, bus_voltage_t* bus_voltage)
+{
+    uint8_t reg = 0;
+    switch(channel)
+    {
+        case CHANNEL_1:
+            reg = __ADDR_CH1_BV;
+            break;
+        case CHANNEL_2:
+            reg = __ADDR_CH2_BV;
+            break;
+        case CHANNEL_3:
+            reg = __ADDR_CH2_BV;
+            break;
+        default:
+            return;
+    }
+    bus_voltage->u16_bus_voltage = read_register_ina3221(reg);
+}
 
 uint16_t read_register_ina3221(const uint8_t reg) {
     const uint8_t buffer[2];
