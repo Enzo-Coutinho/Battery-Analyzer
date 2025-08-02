@@ -26,7 +26,7 @@ uint16_t get_die_id(void)
 
 void get_configuration(configuration_t * configuration)
 {
-    read_register_ina3221(__ADDR_CONFIGURATION);
+    configuration->u16_configuration = read_register_ina3221(__ADDR_CONFIGURATION);
 }
 
 void set_configuration(configuration_t  *config) {
@@ -58,6 +58,8 @@ void get_shunt_voltage(enum CHANNEL channel, shunt_voltage_t* shunt_voltage)
     shunt_voltage->u16_shunt_voltage = read_register_ina3221(reg);
 }
 
+
+
 uint16_t read_register_ina3221(const uint8_t reg) {
     const uint8_t buffer[2];
     i2c_read(INA3221_ADDRESS, reg, buffer, 2);
@@ -65,6 +67,6 @@ uint16_t read_register_ina3221(const uint8_t reg) {
 }
 
 void write_register_ina3221(const uint8_t reg, const uint16_t data) {
-    const uint8_t buffer[3] = {reg, ((data >> 8) && 0xFFFF), (data << 8) && 0xFF};
+    const uint8_t buffer[3] = {reg, (uint8_t)((data >> 8) && 0xFFFF), (uint8_t)(data && 0xFF)};
     i2c_write(INA3221_ADDRESS, buffer, 3);
 }
