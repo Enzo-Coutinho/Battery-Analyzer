@@ -11,17 +11,21 @@ enum CHANNEL {
 };
 
 void reset_ina3221(void);
+uint8_t is_connected_ina3221(void);
 
-shunt_voltage_t get_shunt_voltage(enum CHANNEL channel);
-bus_voltage_t get_bus_voltage(enum CHANNEL channel);
+uint16_t get_manufacturer_id(void);
+uint16_t get_die_id(void);
 
-uint16_t get_manufacturer_id(enum CHANNEL channel);
-uint16_t get_die_id(enum CHANNEL channel);
+void get_configuration(configuration_t* configuration);
+void set_configuration(configuration_t* configuration);
+
+void get_shunt_voltage(enum CHANNEL channel, shunt_voltage_t* shunt_voltage);
+void get_bus_voltage(enum CHANNEL channel, bus_voltage_t* bus_voltage);
 
 
 uint16_t get_current(enum CHANNEL channel);
 
-void read_register_ina3221(uint8_t reg, uint8_t *data, size_t length);
-void write_register_ina3221(uint8_t reg, const uint8_t *data, size_t length);
+void read_register_ina3221(uint8_t reg, uint8_t *data);
+void write_register_ina3221(uint8_t reg, const uint8_t *data);
 
 #endif
