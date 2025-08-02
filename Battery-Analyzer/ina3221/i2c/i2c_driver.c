@@ -16,10 +16,17 @@ void init_i2c_comm(const uint8_t SDA, const uint8_t SCL, const uint8_t i2c_port)
 }
 
 void i2c_write(const uint8_t address, const uint8_t reg, const uint8_t *data, const size_t length) {
-    i2c_write_blocking(I2C_PORT, address, data, length, false);
+    uint8_t buf[length];
+    buf[0] = reg;
+    buf[1] = data[0]; // Copy the first byte of data
+    for(int i=1; i<length; i++)
+    {
+        buf[i] = data[i];
+    }
+    i2c_write_blocking(I2C_PORT, address, buf, length, false);
 }
 
 void i2c_read(const uint8_t address, const uint8_t reg, uint8_t *data, size_t length) {
     i2c_write_blocking(I2C_PORT, address, &reg, 1, true); // Send register address
-    i2c_read_blocking(I2C_PORT, address, data, length, false); // Read data
+    i2c_read_blocking(I2C_PORT, address, &data[0], length, false); // Read data
 }
