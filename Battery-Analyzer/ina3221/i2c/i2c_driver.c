@@ -4,15 +4,19 @@
 
 #define I2C_FREQUENCY (400 * 1000) // 400 kHz
 
-void init_i2c_comm(const uint8_t SDA, const uint8_t SCL, const uint8_t i2c_port) {
-    i2c_init(i2c_port, I2C_FREQUENCY);
+#define I2C_SDA 8
+#define I2C_SCL 9
+#define I2C_PORT i2c0
 
-    gpio_set_function(SDA, GPIO_FUNC_I2C);
-    gpio_set_function(SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(SDA);
-    gpio_pull_up(SCL);
+void init_i2c_comm(void) {
+    i2c_init(I2C_PORT, I2C_FREQUENCY);
 
-    bi_decl(bi_2pins_with_func(SDA, SCL, GPIO_FUNC_I2C));
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C_SDA);
+    gpio_pull_up(I2C_SCL);
+
+    bi_decl(bi_2pins_with_func(I2C_SDA, I2C_SCL, GPIO_FUNC_I2C));
 }
 
 void i2c_write(const uint8_t address, const uint8_t *data, const size_t length) {

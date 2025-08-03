@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include "ina3221/ina3221.h"
 
-#define I2C_SDA 8
-#define I2C_SCL 9
-#define I2C_PORT 0
-
 int main()
 {
     stdio_init_all();
 
-    init_i2c_comm(I2C_SDA, I2C_SCL, I2C_PORT);
+    init_i2c_comm();
 
     do
     {

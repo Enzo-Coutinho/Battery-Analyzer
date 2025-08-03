@@ -79,7 +79,7 @@ void get_bus_voltage(enum CHANNEL channel, bus_voltage_t* bus_voltage)
 }
 
 uint16_t read_register_ina3221(const uint8_t reg) {
-    const uint8_t buffer[2];
+    uint8_t buffer[2];
     i2c_read(INA3221_ADDRESS, reg, buffer, 2);
     return (buffer[0] << 8 | buffer[1]);
 }

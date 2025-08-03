@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Battery-Analyzer Battery-Analyzer.c )
+add_executable(Battery-Analyzer Battery-Analyzer.c ina3221/i2c/i2c_driver.c ina3221/ina3221.c)
 
 pico_set_program_name(Battery-Analyzer "Battery-Analyzer")
 pico_set_program_version(Battery-Analyzer "0.1")
