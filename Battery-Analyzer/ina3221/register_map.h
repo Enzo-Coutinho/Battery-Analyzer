@@ -14,7 +14,7 @@
 #define MSB 0
 #define LSB 1
 
-typedef u8 u8;
+typedef uint8_t u8;
 typedef uint16_t u16;
 
 enum REGISTERS_ADDRESS {
@@ -61,7 +61,7 @@ typedef union
     struct shunt_voltage
     {
         u8 : 3;
-        u8 _data : 12;
+        u16 _data : 12;
         u8 _sign : 1;
     } shunt_voltage_bitmap;
     u16 u16_shunt_voltage;
@@ -72,7 +72,7 @@ typedef union
     struct bus_voltage
     {
         u8 : 3;
-        u8 _data : 12;
+        u16 _data : 12;
         u8 _sign : 1;
     } bus_voltage_bitmap;
     u16 u16_bus_voltage;
