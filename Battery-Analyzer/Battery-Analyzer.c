@@ -10,8 +10,8 @@ int main()
     do
     {
         sleep_ms(500);
-        printf("ID: %d", get_manufacturer_id());
-        printf("Die ID: %d", get_die_id());
+        printf("ID: %d\n", get_manufacturer_id());
+        printf("Die ID: %d\n", get_die_id());
     } while (!is_connected_ina3221());
 
     reset_ina3221();
