@@ -36,6 +36,8 @@ void defaultInitINA3221(void)
     configuration.configuration_bitmap._ch3 = 1;
 
     configuration.configuration_bitmap._avg_mode = AVG_1024;
+
+    
 }
 
 float getCurrent(enum CHANNEL channel)
