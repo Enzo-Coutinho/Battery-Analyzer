@@ -16,7 +16,12 @@ int main()
 
     reset_ina3221();
 
-    sleep_ms(100);
+    do
+    {
+        sleep_ms(500);
+        printf("ID: %d\n", get_manufacturer_id());
+        printf("Die ID: %d\n", get_die_id());
+    } while (!is_connected_ina3221());
 
     while (true) {
         printf("Hello, world!\n");
