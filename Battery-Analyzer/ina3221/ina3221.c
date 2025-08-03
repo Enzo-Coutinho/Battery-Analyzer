@@ -1,15 +1,29 @@
 #include "ina3221.h"
 
-float _shunt_resistors[3] = {0.1, 0.1, 0.1}; // Placeholder for shunt resistors
+// Private functions
+
+uint16_t get_configuration(void);
+void set_configuration(configuration_t* configuration);
+
+int16_t read_register_ina3221(const uint8_t reg);
+void write_register_ina3221(const uint8_t reg, const uint16_t data);
+
+// Private variables
 
 const uint8_t INA3221_ADDRESS = INA3221_I2C_ADDRESS_GND;
 
-void reset_ina3221(void) {
+static bus_voltage_t bus_voltage = {.s16_bus_voltage = 0};
+static shunt_voltage_t shunt_voltage = {.s16_shunt_voltage = 0};
+static configuration_t configuration = {.u16_configuration = 0};
+
+float _shunt_resistors[3] = {0.1, 0.1, 0.1}; // Placeholder for shunt resistors
+
+void resetINA3221(void) {
     configuration_t configuration = {.configuration_bitmap = {._rst = 1}};
     set_configuration(&configuration);
 }
 
-uint8_t is_connected_ina3221(void)
+bool isConnectedINA3221(void)
 {
     return (get_manufacturer_id() == DEFAULT_MANUFACTURER_ID && get_die_id() == DEFAULT_DIE_ID);
 }
@@ -24,21 +38,17 @@ uint16_t get_die_id(void)
     return read_register_ina3221(__ADDR_MANUFCTER_ID);
 }
 
-void get_configuration(configuration_t * configuration)
+uint16_t get_configuration(void)
 {
-    configuration->u16_configuration = read_register_ina3221(__ADDR_CONFIGURATION);
+    return read_register_ina3221(__ADDR_CONFIGURATION);
 }
 
-void set_configuration(configuration_t  *config) {
-    uint16_t set_config = config->u16_configuration;
-    get_configuration(config);
-
-    config->u16_configuration |= set_config;
-
+void set_configuration(configuration_t  * config) {
+    config->u16_configuration |= get_configuration();
     write_register_ina3221(__ADDR_CONFIGURATION, config->u16_configuration);
 }
 
-void get_shunt_voltage(enum CHANNEL channel, shunt_voltage_t* shunt_voltage)
+float get_shunt_voltage(enum CHANNEL channel)
 {
     uint8_t reg = 0;
     switch(channel)
@@ -53,12 +63,13 @@ void get_shunt_voltage(enum CHANNEL channel, shunt_voltage_t* shunt_voltage)
             reg = __ADDR_CH2_SV;
             break;
         default:
-            return;
+            return 0.0f;
     }
-    shunt_voltage->u16_shunt_voltage = read_register_ina3221(reg);
+    shunt_voltage.s16_shunt_voltage = read_register_ina3221(reg);
+    return (shunt_voltage.s16_shunt_voltage >> 3) * 40e-6;
 }
 
-void get_bus_voltage(enum CHANNEL channel, bus_voltage_t* bus_voltage)
+float get_bus_voltage(enum CHANNEL channel)
 {
     uint8_t reg = 0;
     switch(channel)
@@ -73,15 +84,16 @@ void get_bus_voltage(enum CHANNEL channel, bus_voltage_t* bus_voltage)
             reg = __ADDR_CH2_BV;
             break;
         default:
-            return;
+            return 0.0f;
     }
-    bus_voltage->u16_bus_voltage = read_register_ina3221(reg);
+    bus_voltage.s16_bus_voltage = read_register_ina3221(reg);
+    return (bus_voltage.s16_bus_voltage >> 3) * 8e-3;
 }
 
-uint16_t read_register_ina3221(const uint8_t reg) {
+int16_t read_register_ina3221(const uint8_t reg) {
     uint8_t buffer[2];
     i2c_read(INA3221_ADDRESS, reg, buffer, 2);
-    return (buffer[0] << 8 | buffer[1]);
+    return ((buffer[0] << 8) | buffer[1]);
 }
 
 void write_register_ina3221(const uint8_t reg, const uint16_t data) {

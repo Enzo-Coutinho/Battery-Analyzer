@@ -16,6 +16,7 @@
 
 typedef uint8_t u8;
 typedef uint16_t u16;
+typedef int16_t s16;
 
 enum REGISTERS_ADDRESS {
     __ADDR_CONFIGURATION = 0x00,
@@ -64,7 +65,7 @@ typedef union
         u16 _data : 12;
         u8 _sign : 1;
     } shunt_voltage_bitmap;
-    u16 u16_shunt_voltage;
+    s16 s16_shunt_voltage;
 } shunt_voltage_t;
 
 typedef union
@@ -75,7 +76,7 @@ typedef union
         u16 _data : 12;
         u8 _sign : 1;
     } bus_voltage_bitmap;
-    u16 u16_bus_voltage;
+    s16 s16_bus_voltage;
 } bus_voltage_t;
 
 #endif
