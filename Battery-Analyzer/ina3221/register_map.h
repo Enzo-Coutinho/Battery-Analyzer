@@ -41,6 +41,18 @@ enum REGISTERS_ADDRESS {
     __ADDR_DIE_ID = 0xFF
 };
 
+enum AVARAGE_MODES
+{
+    AVG_1 = 0b000,
+    AVG_4 = 0b001,
+    AVG_16 = 0b010,
+    AVG_64 = 0b011,
+    AVG_128 = 0b100,
+    AVG_256 = 0b101,
+    AVG_512 = 0b110,
+    AVG_1024 = 0b111
+};
+
 typedef union
 {
     struct configuration
