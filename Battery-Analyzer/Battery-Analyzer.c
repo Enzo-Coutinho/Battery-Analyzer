@@ -23,6 +23,8 @@ int main()
 
     awaitConnectionOfINA3221();
 
+    defaultInit3221();
+
     while (true) {
         printf("Hello, world!\n");
         sleep_ms(1000);

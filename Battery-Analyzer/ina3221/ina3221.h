@@ -12,8 +12,9 @@ enum CHANNEL {
 
 void resetINA3221(void);
 bool isConnectedINA3221(void);
+void defaultInit3221(void);
 
-int16_t getCurrent(enum CHANNEL channel);
+float getCurrent(enum CHANNEL channel);
 
 uint16_t get_manufacturer_id(void);
 uint16_t get_die_id(void);
