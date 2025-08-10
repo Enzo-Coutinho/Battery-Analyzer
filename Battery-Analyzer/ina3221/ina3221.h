@@ -15,6 +15,7 @@ bool isConnectedINA3221(void);
 void defaultInitINA3221(void);
 
 float getCurrent(enum CHANNEL channel);
+void setShuntOffset(float offset);
 
 uint16_t get_manufacturer_id(void);
 uint16_t get_die_id(void);

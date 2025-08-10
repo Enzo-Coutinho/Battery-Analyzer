@@ -17,6 +17,8 @@ static configuration_t configuration = {.u16_configuration = 0};
 
 float _shunt_resistors[3] = {0.1, 0.1, 0.1}; // Placeholder for shunt resistors
 
+float shunt_voltage_offset = 0.0f;
+
 void resetINA3221(void) {
     configuration_t configuration = {.configuration_bitmap = {._rst = 1}};
     set_configuration(&configuration);
@@ -43,7 +45,12 @@ float getCurrent(enum CHANNEL channel)
     float shuntVoltage = get_shunt_voltage(channel);
     if(isnan(shuntVoltage)) return NAN;
 
-    return shuntVoltage / _shunt_resistors[channel];
+    return (shuntVoltage - shunt_voltage_offset) / _shunt_resistors[channel];
+}
+
+void setShuntOffset(float offset)
+{
+    shunt_voltage_offset = offset;
 }
 
 uint16_t get_manufacturer_id(void)

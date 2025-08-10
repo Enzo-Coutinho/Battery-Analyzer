@@ -25,6 +25,8 @@ int main()
 
     defaultInitINA3221();
 
+    setShuntOffset(get_shunt_voltage(CHANNEL_2));
+
     float previousInternalResistance = 0.0f;
 
     while (true) {
