@@ -23,32 +23,35 @@ int main()
 
     awaitConnectionOfINA3221();
 
-    //defaultInit3221();
+    defaultInitINA3221();
+
+    float previousInternalResistance = 0.0f;
 
     while (true) {
-        float busVoltage1 = get_bus_voltage(CHANNEL_1);
-        float busVoltage2 = get_bus_voltage(CHANNEL_2);
-        float busVoltage3 = get_bus_voltage(CHANNEL_3);
+        float busVoltage[3] = {0.0f};
+        float shuntVoltage[3] = {0.0f};
+        float current[3] = {0.0f};
+        float resistance[3] = {390.1f, 1000.1f, 0.0f};
+        float voltageDrop[3] = {0.0f};
+
+
+        for(int i=CHANNEL_1; i<=CHANNEL_3; i++)
+        {
+            busVoltage[i] = get_bus_voltage(i);
+            shuntVoltage[i] = get_shunt_voltage(i);
+            current[i] = getCurrent(i);
+
+            voltageDrop[i] = resistance[i] * current[i];
+
+            printf("Bus voltage (V) on channel %d: %lf\n", i + 1, busVoltage[i]);
+            printf("Shunt voltage (mV) on channel %d: %lf\n", i + 1, shuntVoltage[i] * 1000);
+            printf("Current (mA) on channel %d: %lf\n", i + 1, current[i] * 1000);
+            printf("Voltage Drop across channel %d: %lf\n", i + 1, voltageDrop[i]);
+        }
         
-        float shuntVoltage1 = get_shunt_voltage(CHANNEL_1);
-        float shuntVoltage2 = get_shunt_voltage(CHANNEL_2);
-        float shuntVoltage3 = get_shunt_voltage(CHANNEL_3);
+        float internalBatteryResistance = (busVoltage[CHANNEL_2] - voltageDrop[CHANNEL_1]) / current[CHANNEL_1];
+        printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
 
-        float current1 = getCurrent(CHANNEL_1);
-        float current2 = getCurrent(CHANNEL_2);
-        float current3 = getCurrent(CHANNEL_3);
-
-        printf("Bus voltage on channel 1: %lf\n", busVoltage1);
-        printf("Bus voltage on channel 2: %lf\n", busVoltage2);
-        printf("Bus voltage on channel 3: %lf\n", busVoltage3);
-
-        printf("Shunt voltage on channel 1: %lf\n", shuntVoltage1);
-        printf("Shunt voltage on channel 2: %lf\n", shuntVoltage2);
-        printf("Shunt voltage on channel 3: %lf\n", shuntVoltage3);
-
-        printf("Current on channel 1: %lf\n", current1);
-        printf("Current on channel 2: %lf\n", current2);
-        printf("Current on channel 3: %lf\n", current3);
 
         sleep_ms(1000);
     }

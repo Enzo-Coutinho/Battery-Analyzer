@@ -12,7 +12,7 @@ enum CHANNEL {
 
 void resetINA3221(void);
 bool isConnectedINA3221(void);
-void defaultInit3221(void);
+void defaultInitINA3221(void);
 
 float getCurrent(enum CHANNEL channel);
 

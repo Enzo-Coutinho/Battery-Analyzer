@@ -69,26 +69,4 @@ typedef union
     u16 u16_configuration;
 } configuration_t;
 
-typedef union
-{
-    struct shunt_voltage
-    {
-        u8 : 3;
-        u16 _data : 12;
-        u8 _sign : 1;
-    } shunt_voltage_bitmap;
-    s16 s16_shunt_voltage;
-} shunt_voltage_t;
-
-typedef union
-{
-    struct bus_voltage
-    {
-        u8 : 3;
-        u16 _data : 12;
-        u8 _sign : 1;
-    } bus_voltage_bitmap;
-    s16 s16_bus_voltage;
-} bus_voltage_t;
-
 #endif
