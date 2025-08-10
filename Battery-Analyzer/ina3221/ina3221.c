@@ -55,7 +55,7 @@ uint16_t get_manufacturer_id(void)
 
 uint16_t get_die_id(void)
 {
-    return read_register_ina3221(__ADDR_MANUFCTER_ID);
+    return read_register_ina3221(__ADDR_DIE_ID);
 }
 
 uint16_t get_configuration(void)
