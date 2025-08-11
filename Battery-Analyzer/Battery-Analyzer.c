@@ -32,7 +32,7 @@ int main()
         float shuntVoltage[3] = {0.0f};
         float current[3] = {0.0f};
 
-        for(int i=CHANNEL_1; i<=CHANNEL_2; i++)
+        for(int i=CHANNEL_1; i<=CHANNEL_3; i++)
         {
             busVoltage[i] = get_bus_voltage(i);
             shuntVoltage[i] = get_shunt_voltage(i);
