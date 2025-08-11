@@ -37,6 +37,11 @@ void defaultInitINA3221(void)
 
     configuration.configuration_bitmap._avg_mode = AVG_1024;
 
+    configuration.configuration_bitmap._vbus_ct = _8_244_MS;
+    configuration.configuration_bitmap._vsh_ct = _8_244_MS;
+
+    configuration.configuration_bitmap._modes = 0b111;
+
     set_configuration(&configuration);
 }
 
@@ -69,7 +74,6 @@ uint16_t get_configuration(void)
 }
 
 void set_configuration(configuration_t  * config) {
-    config->u16_configuration |= get_configuration();
     write_register_ina3221(__ADDR_CONFIGURATION, config->u16_configuration);
 }
 

@@ -15,8 +15,6 @@ int main()
 {
     stdio_init_all();
 
-    printf("Starting app");
-
     init_i2c_comm();
 
     awaitConnectionOfINA3221();
@@ -27,37 +25,25 @@ int main()
 
     defaultInitINA3221();
 
-    setShuntOffset(0.2f / 1000.0f);
-
-    float previousInternalResistance = 0.0f;
+    setShuntOffset(0.0f / 1000.0f);
 
     while (true) {
         float busVoltage[3] = {0.0f};
         float shuntVoltage[3] = {0.0f};
         float current[3] = {0.0f};
-        float resistance[3] = {1000.0f, 1000.1f, 0.0f};
-        float voltageDrop[3] = {0.0f};
 
-
-        for(int i=CHANNEL_1; i<=CHANNEL_3; i++)
+        for(int i=CHANNEL_1; i<=CHANNEL_2; i++)
         {
             busVoltage[i] = get_bus_voltage(i);
             shuntVoltage[i] = get_shunt_voltage(i);
             current[i] = getCurrent(i);
 
-            voltageDrop[i] = resistance[i] * current[i];
-
-            printf("Bus voltage (V) on channel %d: %lf\n", i + 1, busVoltage[i]);
-            printf("Shunt voltage (mV) on channel %d: %lf\n", i + 1, shuntVoltage[i] * 1000);
-            printf("Current (mA) on channel %d: %lf\n", i + 1, current[i] * 1000);
-            printf("Voltage Drop across channel %d: %lf\n", i + 1, voltageDrop[i]);
+            printf("CH %d: bus V = %.6f V, shunt = %.6f mV, I = %.6f mA\n",
+                i+1, busVoltage[i], shuntVoltage[i]*1000.0f, current[i]*1000.0f);
         }
         
-        if(current[CHANNEL_1] != 0.0f);
-        {
-            float internalBatteryResistance = (busVoltage[CHANNEL_2] - voltageDrop[CHANNEL_1]) / current[CHANNEL_1];
-            printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
-        }
+        float internalBatteryResistance = ((busVoltage[CHANNEL_1] + shuntVoltage[CHANNEL_1]) - (busVoltage[CHANNEL_2] - shuntVoltage[CHANNEL_2])) / current[CHANNEL_2];
+        printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
 
 
 
