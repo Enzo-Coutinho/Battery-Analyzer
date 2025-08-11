@@ -15,6 +15,8 @@ int main()
 {
     stdio_init_all();
 
+    printf("Starting app");
+
     init_i2c_comm();
 
     awaitConnectionOfINA3221();
@@ -25,7 +27,7 @@ int main()
 
     defaultInitINA3221();
 
-    setShuntOffset(get_shunt_voltage(CHANNEL_2));
+    setShuntOffset(0.2f / 1000.0f);
 
     float previousInternalResistance = 0.0f;
 
@@ -33,7 +35,7 @@ int main()
         float busVoltage[3] = {0.0f};
         float shuntVoltage[3] = {0.0f};
         float current[3] = {0.0f};
-        float resistance[3] = {390.1f, 1000.1f, 0.0f};
+        float resistance[3] = {1000.0f, 1000.1f, 0.0f};
         float voltageDrop[3] = {0.0f};
 
 
@@ -51,8 +53,12 @@ int main()
             printf("Voltage Drop across channel %d: %lf\n", i + 1, voltageDrop[i]);
         }
         
-        float internalBatteryResistance = (busVoltage[CHANNEL_2] - voltageDrop[CHANNEL_1]) / current[CHANNEL_1];
-        printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
+        if(current[CHANNEL_1] != 0.0f);
+        {
+            float internalBatteryResistance = (busVoltage[CHANNEL_2] - voltageDrop[CHANNEL_1]) / current[CHANNEL_1];
+            printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
+        }
+
 
 
         sleep_ms(1000);
