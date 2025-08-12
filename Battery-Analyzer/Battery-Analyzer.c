@@ -37,9 +37,9 @@ int main()
             busVoltage[i] = get_bus_voltage(i);
             shuntVoltage[i] = get_shunt_voltage(i);
             current[i] = getCurrent(i);
-
-            printf("CH %d: bus V = %.6f V, shunt = %.6f mV, I = %.6f mA\n",
-                i+1, busVoltage[i], shuntVoltage[i]*1000.0f, current[i]*1000.0f);
+            
+            printf("CH %d: bus V = %.6f V, shunt = %.6f mV, I = %.6f mA, bus + shunt: %.6f\n",
+                i+1, busVoltage[i], shuntVoltage[i]*1000.0f, current[i]*1000.0f, (busVoltage[i] + shuntVoltage[i]));
         }
         
         float internalBatteryResistance = ((busVoltage[CHANNEL_1] + shuntVoltage[CHANNEL_1]) - (busVoltage[CHANNEL_2])) / current[CHANNEL_2];
