@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "ina3221/ina3221.h"
 
+const unsigned int buttonSingleShoot = 12;
+
 void awaitConnectionOfINA3221()
 {
     do
@@ -15,6 +17,12 @@ int main()
 {
     stdio_init_all();
 
+    gpio_init(buttonSingleShoot);
+
+    gpio_set_dir(buttonSingleShoot, GPIO_IN);
+
+    gpio_pull_up(buttonSingleShoot);
+
     init_i2c_comm();
 
     awaitConnectionOfINA3221();
@@ -27,26 +35,36 @@ int main()
 
     setShuntOffset(0.0f / 1000.0f);
 
-    while (true) {
-        float busVoltage[3] = {0.0f};
-        float shuntVoltage[3] = {0.0f};
-        float current[3] = {0.0f};
+    bool previousButtonSingleShot = false;
+    bool activeReadOperation = false;
+    unsigned int countReads = 0U;
 
-        for(int i=CHANNEL_1; i<=CHANNEL_3; i++)
+    float busVoltage[3] = {0.0f};
+    float shuntVoltage[3] = {0.0f};
+    float current[3] = {0.0f};
+
+    while (true) {
+        if(gpio_get(buttonSingleShoot) && !previousButtonSingleShot) activeReadOperation = !activeReadOperation;
+        if(activeReadOperation)
         {
-            busVoltage[i] = get_bus_voltage(i);
-            shuntVoltage[i] = get_shunt_voltage(i);
-            current[i] = getCurrent(i);
+            activeReadOperation = false;
+            busVoltage[countReads] = get_bus_voltage(countReads);
+            shuntVoltage[countReads] = get_shunt_voltage(countReads);
+            current[countReads] = getCurrent(countReads);
 
             printf("CH %d: bus V = %.6f V, shunt = %.6f mV, I = %.6f mA\n",
-                i+1, busVoltage[i], shuntVoltage[i]*1000.0f, current[i]*1000.0f);
+                countReads+1, busVoltage[countReads], shuntVoltage[countReads]*1000.0f, current[countReads]*1000.0f);
+
+            ++countReads;
+
+            sleep(500);
         }
-        
-        float internalBatteryResistance = ((busVoltage[CHANNEL_1] + shuntVoltage[CHANNEL_1]) - (busVoltage[CHANNEL_2])) / current[CHANNEL_2];
-        printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
-
-
-
-        sleep_ms(1000);
+        if(countReads == 2)
+        {
+            countReads = 0;
+            float internalBatteryResistance = ((busVoltage[CHANNEL_1] + shuntVoltage[CHANNEL_1]) - (busVoltage[CHANNEL_2])) / current[CHANNEL_2];
+            printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
+        }
+        sleep(50);
     }
 }
