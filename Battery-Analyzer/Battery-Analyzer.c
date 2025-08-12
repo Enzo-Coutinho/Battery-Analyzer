@@ -47,7 +47,6 @@ int main()
         if(gpio_get(buttonSingleShoot) && !previousButtonSingleShot) activeReadOperation = !activeReadOperation;
         if(activeReadOperation)
         {
-            activeReadOperation = false;
             busVoltage[countReads] = get_bus_voltage(countReads);
             shuntVoltage[countReads] = get_shunt_voltage(countReads);
             current[countReads] = getCurrent(countReads);
@@ -56,8 +55,7 @@ int main()
                 countReads+1, busVoltage[countReads], shuntVoltage[countReads]*1000.0f, current[countReads]*1000.0f);
 
             ++countReads;
-
-            sleep(500);
+            activeReadOperation = false;
         }
         if(countReads == 2)
         {
