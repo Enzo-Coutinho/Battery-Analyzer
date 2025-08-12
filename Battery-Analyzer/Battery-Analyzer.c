@@ -42,7 +42,7 @@ int main()
                 i+1, busVoltage[i], shuntVoltage[i]*1000.0f, current[i]*1000.0f);
         }
         
-        float internalBatteryResistance = ((busVoltage[CHANNEL_1] + shuntVoltage[CHANNEL_1]) - (busVoltage[CHANNEL_2] - shuntVoltage[CHANNEL_2])) / current[CHANNEL_2];
+        float internalBatteryResistance = ((busVoltage[CHANNEL_1] + shuntVoltage[CHANNEL_1]) - (busVoltage[CHANNEL_2])) / current[CHANNEL_2];
         printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
 
 
