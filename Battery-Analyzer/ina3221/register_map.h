@@ -53,6 +53,18 @@ enum AVARAGE_MODES
     AVG_1024 = 0b111
 };
 
+enum CT_TIMES
+{
+    _140_US = 0b000,
+    _204_US = 0b001,
+    _332_US = 0b010,
+    _588_US = 0b011,
+    _1_1_MS = 0b100,
+    _2_116_MS = 0b101,
+    _4_156_MS = 0b110,
+    _8_244_MS = 0b111
+};
+
 typedef union
 {
     struct configuration

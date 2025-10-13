@@ -37,6 +37,11 @@ void defaultInitINA3221(void)
 
     configuration.configuration_bitmap._avg_mode = AVG_1024;
 
+    configuration.configuration_bitmap._vbus_ct = _8_244_MS;
+    configuration.configuration_bitmap._vsh_ct = _8_244_MS;
+
+    configuration.configuration_bitmap._modes = 0b111;
+
     set_configuration(&configuration);
 }
 
@@ -45,7 +50,7 @@ float getCurrent(enum CHANNEL channel)
     float shuntVoltage = get_shunt_voltage(channel);
     if(isnan(shuntVoltage)) return NAN;
 
-    return (shuntVoltage - shunt_voltage_offset) / _shunt_resistors[channel];
+    return (shuntVoltage) / _shunt_resistors[channel];
 }
 
 void setShuntOffset(float offset)
@@ -73,7 +78,6 @@ uint16_t get_configuration(void)
 }
 
 void set_configuration(configuration_t  * config) {
-    config->u16_configuration |= get_configuration();
     write_register_ina3221(__ADDR_CONFIGURATION, config->u16_configuration);
 }
 
@@ -89,13 +93,13 @@ float get_shunt_voltage(enum CHANNEL channel)
             reg = __ADDR_CH2_SV;
             break;
         case CHANNEL_3:
-            reg = __ADDR_CH2_SV;
+            reg = __ADDR_CH3_SV;
             break;
         default:
             return NAN;
     }
     int16_t shunt_voltage = read_register_ina3221(reg);
-    return (shunt_voltage >> 3) * 40e-6;
+    return ((shunt_voltage >> 3) * 40e-6) - shunt_voltage_offset;
 }
 
 float get_bus_voltage(enum CHANNEL channel)
@@ -110,7 +114,7 @@ float get_bus_voltage(enum CHANNEL channel)
             reg = __ADDR_CH2_BV;
             break;
         case CHANNEL_3:
-            reg = __ADDR_CH2_BV;
+            reg = __ADDR_CH3_BV;
             break;
         default:
             return NAN;

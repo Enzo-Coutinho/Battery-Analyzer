@@ -25,9 +25,7 @@ int main()
 
     defaultInitINA3221();
 
-    setShuntOffset(get_shunt_voltage(CHANNEL_2));
-
-    float previousInternalResistance = 0.0f;
+    setShuntOffset(0.0f / 1000.0f);
 
     const float maxBatteryCharge_Ah = 3.0; // 3000Ah
 
@@ -36,27 +34,25 @@ int main()
         float busVoltage[3] = {0.0f};
         float shuntVoltage[3] = {0.0f};
         float current[3] = {0.0f};
-        float resistance[3] = {390.1f, 1000.1f, 0.0f};
-        float voltageDrop[3] = {0.0f};
-
 
         for(int i=CHANNEL_1; i<=CHANNEL_3; i++)
         {
             busVoltage[i] = get_bus_voltage(i);
             shuntVoltage[i] = get_shunt_voltage(i);
             current[i] = getCurrent(i);
-
-            voltageDrop[i] = resistance[i] * current[i];
-
-            printf("Bus voltage (V) on channel %d: %lf\n", i + 1, busVoltage[i]);
-            printf("Shunt voltage (mV) on channel %d: %lf\n", i + 1, shuntVoltage[i] * 1000);
-            printf("Current (mA) on channel %d: %lf\n", i + 1, current[i] * 1000);
-            printf("Voltage Drop across channel %d: %lf\n", i + 1, voltageDrop[i]);
+            
+            printf("CH %d: bus V = %.6f V, shunt = %.6f mV, I = %.6f mA, bus + shunt: %.6f\n",
+                i+1, busVoltage[i], shuntVoltage[i]*1000.0f, current[i]*1000.0f, (busVoltage[i] + shuntVoltage[i]));
         }
         
-        float internalBatteryResistance = (busVoltage[CHANNEL_2] - voltageDrop[CHANNEL_1]) / current[CHANNEL_1];
+        float internalBatteryResistance = ((busVoltage[CHANNEL_1] + shuntVoltage[CHANNEL_1]) - (busVoltage[CHANNEL_2])) / current[CHANNEL_2];
         printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> f959d8e9954320b9d9c9bf4a40f57f54317ca270
         sleep_ms(1000);
     }
 }
