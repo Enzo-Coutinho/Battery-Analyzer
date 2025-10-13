@@ -29,7 +29,10 @@ int main()
 
     float previousInternalResistance = 0.0f;
 
+    const float maxBatteryCharge_Ah = 3.0; // 3000Ah
+
     while (true) {
+
         float busVoltage[3] = {0.0f};
         float shuntVoltage[3] = {0.0f};
         float current[3] = {0.0f};
@@ -53,7 +56,6 @@ int main()
         
         float internalBatteryResistance = (busVoltage[CHANNEL_2] - voltageDrop[CHANNEL_1]) / current[CHANNEL_1];
         printf("Internal Resistance (ohm): %lf\n", internalBatteryResistance);
-
 
         sleep_ms(1000);
     }

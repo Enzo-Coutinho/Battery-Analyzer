@@ -53,6 +53,10 @@ void setShuntOffset(float offset)
     shunt_voltage_offset = offset;
 }
 
+void setShuntResistor(enum CHANNEL channel, float resistance) {
+    _shunt_resistors[channel] = resistance;
+}
+
 uint16_t get_manufacturer_id(void)
 {
     return read_register_ina3221(__ADDR_MANUFCTER_ID);

@@ -16,6 +16,7 @@ void defaultInitINA3221(void);
 
 float getCurrent(enum CHANNEL channel);
 void setShuntOffset(float offset);
+void setShuntResistor(enum CHANNEL channel, float resistance);
 
 uint16_t get_manufacturer_id(void);
 uint16_t get_die_id(void);
